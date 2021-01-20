@@ -26,6 +26,43 @@ resp_albums = requests.get(
         "5.126"
     }).json()
 if "error" in resp_albums:
+import requests
+import json
+import os
+from pprint import pprint
+import alive
+from alive_progress import alive_bar
+import time
+with alive_bar(count) as bar:
+    for i in range(count):
+        bar()
+        time.sleep(1)
+user_id = input("Введите id пользователя")
+token_vk = input("Введите токен от Вконтакте")
+token_disk = input("Введите токен от Яндекс.Диск")
+dict = {}
+list = [ ]
+url = " "
+like = " "
+count = 0
+create_folder = requests.put(
+    "https://cloud-api.yandex.net/v1/disk/resources",
+    params={
+        "path": "/PHOTOYOU",
+        "overwrite": "true"
+    },
+    headers={"Authorization": token_disk})
+resp_albums = requests.get(
+    "https://api.vk.com/method/photos.getAlbums/",
+    params={
+        "owner_id":
+        user_id,
+        "access_token":
+        token_vk,
+        "v":
+        "5.126"
+    }).json()
+if "error" in resp_albums:
     print("Ошибка:", resp_albums["error"]["error_msg"])
 elif resp_albums["response"]["count"] == 0:
     print("У пользователя нет альбомов с фотографиями")
@@ -42,7 +79,7 @@ else:
                 "1",
                 "count": "5",
                 "access_token":
-                "token",
+                token_vk,
                 "v":
                 "5.126"
             }).json()
@@ -75,11 +112,4 @@ else:
                         "https://cloud-api.yandex.net/v1/disk/resources/upload",
                         params={"path": "/PHOTOYOU/" + like,
                         "url": k},
-                        headers={"Authorization": "token"})
-import alive
-from alive_progress import alive_bar
-import time
-with alive_bar(count) as bar:
-    for i in range(count):
-        bar()
-        time.sleep(1)
+                        headers={"Authorization": token_disk})
